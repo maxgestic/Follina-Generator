@@ -4,6 +4,7 @@
 ## Requirements
  - Linux
  - zip tool (sudo apt install zip)
+ - Python 3
 
 ## Usage
 python follina.py IP PORT COMMAND
