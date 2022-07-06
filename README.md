@@ -8,4 +8,12 @@ A simple Follina RTF and DOCX generator, this was created by me to learn about r
  - Python 3
 
 ## Usage
-python follina.py IP PORT COMMAND
+python3 follina.py {host ip} {host port} {powershell command(s)}
+
+Type: docx or rtf
+
+Host IP: The ip where the malicous HTML file will be hosted
+
+Host Port: The port where the malicous HTML file with be hosted
+
+PowerShell Command(s): The command(s) the exploit should run when the word document is opened
