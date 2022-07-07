@@ -1,3 +1,6 @@
 webserver/mal.html
 output/maldoc.rtf
 output/maldoc.docx
+templates/doc/word/_rels/document.xml.rels
+command
+webserver/nc64.exe
